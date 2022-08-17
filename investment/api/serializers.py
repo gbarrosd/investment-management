@@ -1,6 +1,4 @@
 from rest_framework import serializers
-from django.db import transaction
-from drf_writable_nested.serializers import WritableNestedModelSerializer
 
 from investment.models import Investments, Owner
 
@@ -17,10 +15,8 @@ class InvestmentSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class InvestmentNestedSerializer(serializers.ModelSerializer):
-    # owner_info = OwnerSerializer(many=True)
+    owner = OwnerSerializer()
 
     class Meta:
         model = Investments
         fields = "__all__"
-        read_only_fields = ('owner_info',)
-

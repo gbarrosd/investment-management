@@ -1,5 +1,5 @@
-from rest_framework import permissions, viewsets, mixins
-from rest_framework.response import Response
+from rest_framework import viewsets
+# from rest_framework.response import Response
 
 from investment.api.serializers import OwnerSerializer, InvestmentSerializer, InvestmentNestedSerializer
 
@@ -13,25 +13,10 @@ class InvestmentsViewSet(viewsets.ModelViewSet):
     queryset = Investments.objects.all()
     serializer_class = InvestmentSerializer
 
-    def get_custom_serializer(self, serializer_class, *args, **kwargs):
-        # serializer_class = serializer_class
-        kwargs.setdefault("context", self.get_serializer_context())
-        return serializer_class(*args, **kwargs)
-
-
     def retrieve(self, request, *args, **kwargs):
         self.serializer_class = InvestmentNestedSerializer
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        print(serializer.data, 'identificador')
-        return Response(serializer.data)
+        return super().retrieve(request, *args, **kwargs)
     
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-
-        serializer = self.get_custom_serializer(
-            InvestmentNestedSerializer, queryset, many=True
-        )
-        return Response(serializer.data)
-
-
+        self.serializer_class = InvestmentNestedSerializer
+        return super().list(request, *args, **kwargs)

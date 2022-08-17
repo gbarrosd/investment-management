@@ -6,12 +6,12 @@ import datetime
 
 class Owner(models.Model):
     name = models.CharField(
-        max_length=255, verbose_name=_("user")
+        max_length=255, verbose_name=_("name")
     )
 
 class Investments(models.Model):
     owner = models.ForeignKey(
-        'Owner', on_delete=models.CASCADE, verbose_name=_("owner")
+        'Owner', on_delete=models.CASCADE, verbose_name=_("owner"), related_name="owner"
     )
     creation_date = models.DateField(
         verbose_name=_("created in"), validators=[MaxValueValidator(datetime.date.today)]
@@ -19,8 +19,3 @@ class Investments(models.Model):
     amount = models.DecimalField(
         max_digits=19, decimal_places=10, verbose_name=_("amount"), validators=[MinValueValidator(0)]
     )
-
-    @property
-    def owner_info(self):
-
-        return {'testa': 'teste'}
