@@ -54,12 +54,12 @@ class InvestmentsViewSet(viewsets.ModelViewSet):
         balance = investment.balance
         years = investment_age(investment.creation_date)
         if years < 1:
-            desconto = (income*Decimal(0.225))
+            taxation = (income*Decimal(0.225))
         elif years >= 1 and years <= 2:
-            income -= (income*Decimal(0.185))
+            taxation -= (income*Decimal(0.185))
         elif years > 2:
-            income -= (income*Decimal(0.15))
-        return Response({'valor do saque: ':balance-desconto})
+            taxation -= (income*Decimal(0.15))
+        return Response({'valor do saque: ':balance-taxation})
 
                 
     
