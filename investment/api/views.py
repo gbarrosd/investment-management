@@ -20,7 +20,7 @@ class InvestmentsViewSet(viewsets.ModelViewSet):
     queryset = Investments.objects.all()
     serializer_class = InvestmentSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ["owner"]
+    filterset_fields = ["owner__id"]
     search_fields = ["owner__name"]
 
     def create(self, request, *args, **kwargs):
@@ -36,10 +36,6 @@ class InvestmentsViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         self.serializer_class = InvestmentNestedSerializer
         return super().list(request, *args, **kwargs)
-    
-    # @staticmethod
-    # def investment_age(date_investment):
-    #     pass
 
     @action(detail=True, methods=['get'])
     def withdraw(self, request, pk=None):
@@ -56,10 +52,17 @@ class InvestmentsViewSet(viewsets.ModelViewSet):
         if years < 1:
             taxation = (income*Decimal(0.225))
         elif years >= 1 and years <= 2:
-            taxation -= (income*Decimal(0.185))
+            taxation = (income*Decimal(0.185))
         elif years > 2:
-            taxation -= (income*Decimal(0.15))
-        return Response({'valor do saque: ':balance-taxation})
+            taxation = (income*Decimal(0.15))
+        amount_withdrawn = balance-taxation
+        if not investment.withdrawal_date:
+            investment.withdrawal_date = date.today()
+            investment.balance = investment.income
+            investment.save()
+            return Response({'valor do saque: ':amount_withdrawn})
+        else:
+            return Response({'valor do saque: ':amount_withdrawn+investment.amount})
 
                 
     

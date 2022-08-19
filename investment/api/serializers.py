@@ -40,14 +40,11 @@ class InvestmentNestedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Investments
-        fields = "__all__"
+        fields = ('id', 'owner', 'creation_date', 'balance')
 
 class InvestmentGetNestedSerializer(serializers.ModelSerializer):
     owner = OwnerSerializer()
 
     class Meta:
         model = Investments
-        fields = ('id', 'owner', 'creation_date', 'amount', 'balance', 'expected_balance', 'income')
-
-# class WithdrawSerializer(serializers.BaseSerializer):
-#     value_of_Withdraw = serializers.DecimalField()
+        fields = ('id', 'owner', 'creation_date', 'amount', 'balance', 'expected_balance', 'income', 'withdrawal_date')

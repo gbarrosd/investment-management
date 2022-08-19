@@ -29,6 +29,10 @@ class Investments(models.Model):
     balance = models.DecimalField(
         max_digits=19, decimal_places=10, null=True, blank=True, verbose_name=_("balance"), validators=[MinValueValidator(0)]
     )
+    withdrawal_date = models.DateField(
+        verbose_name=_("withdrawal date"), null=True, blank=True
+    )
+
     @staticmethod
     def calc_investment_date(update_date):
         today = date.today()
@@ -39,15 +43,18 @@ class Investments(models.Model):
         return months, new_update_date
 
     @property
-    def expected_balance(self): 
-        calc = self.calc_investment_date(self.update_date)
-        gain = (self.balance*(1 + Decimal(0.0052))**calc[0]) - self.balance
-        income = self.income + gain if self.income else gain
-        balance = self.amount + income
-        id = self.id
-        Investments.objects.filter(pk=id).update(income=income)
-        Investments.objects.filter(pk=id).update(balance=balance)
-        Investments.objects.filter(pk=id).update(update_date=calc[1])
-        value = balance*(1+Decimal(0.0052))**1
+    def expected_balance(self):
+        if not self.withdrawal_date: 
+            calc = self.calc_investment_date(self.update_date)
+            gain = (self.balance*(1 + Decimal(0.0052))**calc[0]) - self.balance
+            income = self.income + gain if self.income else gain
+            balance = self.amount + income
+            id = self.id
+            Investments.objects.filter(pk=id).update(income=income)
+            Investments.objects.filter(pk=id).update(balance=balance)
+            Investments.objects.filter(pk=id).update(update_date=calc[1])
+            value = balance*(1+Decimal(0.0052))**1
+        else:
+            value = {}
         
         return value
