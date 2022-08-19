@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Djano Rest
     'rest_framework',
+    'django_filters',
+    'drf_yasg',
     # Locals
     'investment',
 ]
