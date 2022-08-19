@@ -40,7 +40,7 @@ class InvestmentNestedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Investments
-        fields = ('id', 'owner', 'creation_date', 'balance')
+        fields = ('id', 'owner', 'creation_date', 'balance', 'expected_balance')
 
 class InvestmentGetNestedSerializer(serializers.ModelSerializer):
     owner = OwnerSerializer()
